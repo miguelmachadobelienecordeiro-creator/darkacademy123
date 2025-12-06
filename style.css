@@ -1,138 +1,162 @@
-body {
-    margin: 0;
-    font-family: 'Arial', sans-serif;
-    background-color: #0d0d0d;
-    color: #fff;
+/* Corpo e Fundo Neon Dinâmico */
+body{
+    margin:0;
+    padding:0;
+    font-family: 'Orbitron', sans-serif;
+    background: linear-gradient(135deg,#0f0c29,#302b63,#24243e);
+    color:white;
+    overflow-x:hidden;
 }
 
-#login-container {
-    position: fixed;
-    top:50%;
-    left:50%;
-    transform: translate(-50%, -50%);
-    background-color: #1a1a1a;
-    padding:30px;
-    border-radius:15px;
-    text-align:center;
-    box-shadow: 0 0 20px #9b00ff;
+/* Top Bar Futurista com Glow Neon */
+.top-bar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background: rgba(0,0,0,0.7);
+    padding:15px 30px;
+    border-bottom: 2px solid #00ffea;
+    box-shadow: 0 0 20px #00ffea;
 }
-
-#login-container input {
-    width:90%;
-    padding:8px;
-    margin:10px 0;
-    border-radius:8px;
-    border:1px solid #555;
-    background-color: #2a2a2a;
-    color:#fff;
+.top-bar h2{
+    text-shadow: 0 0 10px #00ffea;
+    font-size: 24px;
 }
-
-#login-container button {
-    padding:10px 20px;
-    margin:5px;
-    border-radius:8px;
-    border:none;
-    background-color:#9b00ff;
-    color:#fff;
+.profile-pic{
+    width:55px; height:55px;
+    border-radius:50%;
+    border:3px solid #00ffea;
+    box-shadow: 0 0 15px #00ffea;
+}
+.discord-icon{
+    width:45px; height:45px;
     cursor:pointer;
+    filter: drop-shadow(0 0 5px #7289da);
+    transition: transform 0.3s, filter 0.3s;
+}
+.discord-icon:hover{
+    transform: scale(1.2);
+    filter: drop-shadow(0 0 20px #7289da);
 }
 
-#login-container button:hover {
-    background-color:#c100ff;
+/* Botões de Modos com Neon Animado */
+.mode-buttons{
+    text-align:center;
+    margin:25px 0;
+}
+.mode-buttons button{
+    margin:7px;
+    padding:12px 25px;
+    border:none;
+    border-radius:20px;
+    background: linear-gradient(45deg,#00ffea,#007acc,#00ffea);
+    color:#000;
+    font-weight:bold;
+    cursor:pointer;
+    box-shadow: 0 0 10px #00ffea, 0 0 20px #007acc;
+    transition:0.3s;
+}
+.mode-buttons button:hover{
+    transform: translateY(-6px) scale(1.05);
+    box-shadow: 0 0 20px #00ffea, 0 0 30px #007acc, 0 0 40px #00ffea;
 }
 
-.upload-label {
+/* Container de Stats */
+.mode-container{
+    width:90%;
+    max-width:650px;
+    margin:20px auto;
+    padding:25px;
+    background: rgba(0,0,0,0.6);
+    border-radius:25px;
+    box-shadow: 0 0 25px #00ffea;
+    border: 1px solid #00ffea;
+}
+
+/* Ranking Futurista */
+.ranking-container{
+    width:90%;
+    max-width:750px;
+    margin:20px auto 50px auto;
+}
+.rank-card{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background: rgba(255,255,255,0.05);
+    margin:12px 0;
+    padding:18px 25px;
+    border-radius:20px;
+    box-shadow: 0 0 15px #00ffea, 0 0 25px #007acc inset;
+    transition:0.3s;
+}
+.rank-card:hover{
+    transform: translateY(-7px) scale(1.02);
+    box-shadow: 0 0 30px #00ffea, 0 0 40px #007acc inset, 0 0 50px #00ffea;
+}
+.rank-number{
+    font-weight:bold;
+    font-size:18px;
+    margin-right:20px;
+    text-shadow: 0 0 10px #00ffea;
+}
+.rank-pic{
+    width:55px; height:55px;
+    border-radius:50%;
+    margin-right:20px;
+    border:2px solid #00ffea;
+    box-shadow: 0 0 15px #00ffea;
+}
+.rank-info span{
     display:block;
-    color:#9b00ff;
-    margin:10px 0;
+    font-size:14px;
+    text-shadow: 0 0 5px #00ffea;
+}
+
+/* Chat Futurista */
+.chat-container{
+    width:90%;
+    max-width:650px;
+    margin:20px auto;
+    padding:20px;
+    background: rgba(0,0,0,0.6);
+    border-radius:25px;
+    box-shadow:0 0 25px #00ffea;
+    border: 1px solid #00ffea;
+}
+.chat-messages{
+    max-height:220px;
+    overflow-y:auto;
+    background: rgba(255,255,255,0.05);
+    padding:12px;
+    margin-bottom:12px;
+    border-radius:15px;
+    box-shadow: 0 0 15px #00ffea inset;
+}
+
+/* Inputs e Botões */
+input{
+    width:90%;
+    padding:12px;
+    margin:12px 0;
+    border:none;
+    border-radius:15px;
+    background: rgba(255,255,255,0.1);
+    color:#fff;
+    box-shadow: 0 0 10px #00ffea inset;
+}
+button{
+    padding:12px 25px;
+    border:none;
+    border-radius:15px;
+    background: #00ffea;
+    color:#000;
     cursor:pointer;
     font-weight:bold;
-    text-decoration:underline;
+    box-shadow:0 0 10px #00ffea;
+    transition:0.3s;
 }
-
-#main-content {
-    max-width:900px;
-    margin:20px auto;
-}
-
-.box-perfil {
-    display:flex;
-    align-items:center;
-    background-color:#1a1a1a;
-    padding:15px;
-    border-radius:12px;
-    box-shadow:0 0 15px #9b00ff;
-    margin-bottom:15px;
-}
-
-.box-perfil img {
-    width:80px;
-    height:80px;
-    border-radius:50%;
-    margin-right:15px;
-    border:2px solid #9b00ff;
-}
-
-.box-perfil h2 {
-    margin:0;
-    color:#ffccff;
-}
-
-.box-perfil p {
-    margin:3px 0;
-}
-
-.box {
-    background-color:#1a1a1a;
-    padding:15px;
-    margin-bottom:15px;
-    border-radius:12px;
-    box-shadow:0 0 15px #9b00ff;
-}
-
-.chat-box {
-    height:150px;
-    overflow-y:auto;
-    border:1px solid #9b00ff;
-    padding:5px;
-    margin-bottom:5px;
-    border-radius:8px;
-    background-color:#0f0f0f;
-}
-
-.stats-input {
-    width:60px;
-    padding:4px;
-    border-radius:6px;
-    border:1px solid #555;
-    background-color:#2a2a2a;
-    color:#fff;
-    margin-left:5px;
-}
-
-.select-input {
-    padding:4px;
-    border-radius:6px;
-    border:1px solid #555;
-    background-color:#2a2a2a;
-    color:#fff;
-    margin-left:5px;
-}
-
-.rank-user {
-    display:flex;
-    align-items:center;
-    margin-bottom:8px;
-    cursor:pointer;
-}
-.rank-user img {
-    width:40px;
-    height:40px;
-    border-radius:50%;
-    margin-right:10px;
-    border:2px solid #9b00ff;
-}
-.rank-user p {
-    margin:0;
-    color:#ffccff;
+button:hover{
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 0 25px #00ffea, 0 0 40px #007acc inset;
 }
