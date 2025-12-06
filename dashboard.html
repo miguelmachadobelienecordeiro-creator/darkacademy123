@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Neon Game</title>
+<style>
+body { background:#111; color:#fff; font-family: Arial, sans-serif; margin:0; padding:0;}
+header { background:#222; border-bottom:2px solid #9b00ff; padding:10px; display:flex; justify-content:space-between; align-items:center;}
+header h1 { margin:0; color:#9b00ff;}
+header button { background:#9b00ff; border:none; padding:5px 10px; color:#fff; cursor:pointer; border-radius:5px;}
+.container { display:flex; padding:20px; gap:20px; flex-wrap:wrap;}
+.box { background:#222; border:2px solid #9b00ff; border-radius:10px; padding:15px; flex:1; min-width:300px;}
+input, select { width:95%; padding:5px; margin:5px 0; border-radius:5px; border:1px solid #9b00ff; background:#111; color:#fff;}
+button { padding:5px 10px; background:#9b00ff; border:none; color:#fff; cursor:pointer; border-radius:5px;}
+button:hover { background:#bb00ff;}
+span { cursor:pointer; color:#9b00ff;}
+#chat-container { display:none; }
+#chat-mensagens { height:200px; overflow-y:auto; border:1px solid #9b00ff; padding:5px; margin-bottom:5px;}
+</style>
+</head>
+<body onload="checkLogin(); mostrarPerfil(); renderRanking(); atualizarVideos(); mostrarValidacao();">
+
+<header>
+    <h1>Dashboard</h1>
+    <button onclick="logout()">Logout</button>
+</header>
+
+<div class="container">
+
+    <!-- Perfil -->
+    <div class="box" id="perfil"></div>
+
+    <!-- Formulários BedWars/Fortnite -->
+    <div class="box">
+        <h3>Jogos</h3>
+        <button onclick="abrirForm('BedWars')">BedWars</button>
+        <button onclick="abrirForm('Fortnite')">Fortnite</button>
+
+        <!-- Form BedWars -->
+        <div id="form-BedWars" style="display:none;">
+            <h4>BedWars</h4>
+            Partidas: <input type="number" id="bw-partidas"><br>
+            Kills: <input type="number" id="bw-kills"><br>
+            Vitórias: <input type="number" id="bw-vitorias"><br>
+            URL do vídeo: <input type="text" id="bw-video" placeholder="Cole a URL do vídeo"><br>
+            <button onclick="enviarStats('BedWars')">Enviar</button>
+        </div>
+
+        <!-- Form Fortnite -->
+        <div id="form-Fortnite" style="display:none;">
+            <h4>Fortnite</h4>
+            Partidas: <input type="number" id="fn-partidas"><br>
+            Kills: <input type="number" id="fn-kills"><br>
+            URL do vídeo: <input type="text" id="fn-video" placeholder="Cole a URL do vídeo"><br>
+            <button onclick="enviarStats('Fortnite')">Enviar</button>
+        </div>
+    </div>
+
+    <!-- Ranking BedWars -->
+    <div class="box">
+        <h3>Ranking BedWars</h3>
+        <div id="ranking-list-BW"></div>
+    </div>
+
+    <!-- Ranking Fortnite -->
+    <div class="box">
+        <h3>Ranking Fortnite</h3>
+        <div id="ranking-list-FN"></div>
+    </div>
+
+    <!-- Validação (DARK/ARTHUR) -->
+    <div class="box" id="validacao-container" style="display:none;">
+        <h3>Validação de Stats</h3>
+        <div id="validacao-list"></div>
+    </div>
+
+    <!-- Vídeos (DARK/ARTHUR) -->
+    <div class="box" id="videos-container" style="display:none;">
+        <h3>Vídeos enviados</h3>
+        <div id="videos-list"></div>
+    </div>
+
+    <!-- Chat -->
+    <div class="box" id="chat-container">
+        <h3 id="chat-titulo">Chat</h3>
+        <div id="chat-mensagens"></div>
+        <input type="text" id="chat-input" placeholder="Digite a mensagem">
+        <button onclick="enviarMensagem()">Enviar</button>
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

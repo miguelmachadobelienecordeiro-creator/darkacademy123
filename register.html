@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cadastro Neon Game</title>
+<style>
+body {
+    background:#111;
+    color:#fff;
+    font-family: Arial, sans-serif;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    margin:0;
+}
+.container {
+    background:#222;
+    border:2px solid #9b00ff;
+    border-radius:10px;
+    padding:30px;
+    width:300px;
+    text-align:center;
+}
+input {
+    width:90%;
+    padding:10px;
+    margin:10px 0;
+    border-radius:5px;
+    border:1px solid #9b00ff;
+    background:#111;
+    color:#fff;
+}
+button {
+    padding:10px 20px;
+    background:#9b00ff;
+    border:none;
+    color:#fff;
+    cursor:pointer;
+    border-radius:5px;
+}
+button:hover {
+    background:#bb00ff;
+}
+a {
+    color:#9b00ff;
+    text-decoration:none;
+}
+a:hover {
+    text-decoration:underline;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Cadastro</h2>
+    <input type="text" id="reg-nome" placeholder="Nome">
+    <input type="password" id="reg-senha" placeholder="Senha">
+    <button id="btn-cadastrar">Cadastrar</button>
+    <p>Já possui conta? <a href="index.html">Login</a></p>
+</div>
+
+<script src="script.js"></script>
+<script>
+document.getElementById("btn-cadastrar").addEventListener("click", cadastrar);
+</script>
+
+</body>
+</html>
