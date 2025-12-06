@@ -1,7 +1,3 @@
-// ----------------- IMPORTS FIREBASE -----------------
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-import { getDatabase, ref, set, get, onValue, update, push } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
-
 // ----------------- CONFIG FIREBASE -----------------
 const firebaseConfig = {
   apiKey: "AIzaSyCkmqu60VH5bsHE4c8J0fZesiPGBFJprw0",
@@ -13,218 +9,159 @@ const firebaseConfig = {
   appId: "1:182340690460:web:ee84ca564efb931a7535d9",
   measurementId: "G-66Q9VXG8CE"
 };
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-
-// ----------------- USUÁRIO LOGADO -----------------
-let usuarioLogado = null;
-let chatUsuarioAtual = null;
-
-// ----------------- LOGIN -----------------
-async function login() {
-    const nome = document.getElementById("login-nome").value.trim();
-    const senha = document.getElementById("login-senha").value.trim();
-
-    const snapshot = await get(ref(db, `usuarios/${nome}`));
-    const usuario = snapshot.val();
-    if (!usuario || usuario.senha !== senha) { alert("Usuário ou senha incorretos!"); return; }
-
-    usuarioLogado = usuario;
-    usuarioLogado.nome = nome;
-    window.location.href = "dashboard.html";
-}
-
-// ----------------- CADASTRO -----------------
-async function cadastrar() {
-    const nome = document.getElementById("reg-nome").value.trim();
-    const senha = document.getElementById("reg-senha").value.trim();
-
-    const snapshot = await get(ref(db, `usuarios/${nome}`));
-    if (snapshot.exists()) { alert("Usuário já cadastrado!"); return; }
-
-    await set(ref(db, `usuarios/${nome}`), {
-        senha,
-        BedWars: { partidas: 0, kills: 0, vitorias: 0, videos: [] },
-        Fortnite: { partidas: 0, kills: 0, videos: [] },
-        envios: [],
-        chats: {}
-    });
-    alert("Cadastro realizado!");
-    window.location.href = "index.html";
-}
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
 
 // ----------------- DASHBOARD -----------------
-function mostrarPerfil() {
-    if (!usuarioLogado) return;
-    const div = document.getElementById("perfil");
-    div.innerHTML = `<img src="https://via.placeholder.com/80">
-                     <div><h2>${usuarioLogado.nome}</h2></div>`;
-}
+let currentUserId = localStorage.getItem("currentUser");
+let currentMode = "bedwars";
+let chattingWith = null;
+const allowedVideoUsers = ["DARK","ARTHUR"];
 
-// ----------------- FORMULÁRIOS -----------------
-function abrirForm(jogo) {
-    document.getElementById("form-BedWars").style.display = "none";
-    document.getElementById("form-Fortnite").style.display = "none";
-    document.getElementById("form-" + jogo).style.display = "block";
-}
-
-// ----------------- ENVIAR STATS -----------------
-async function enviarStats(jogo) {
-    const partidas = parseInt(document.getElementById(jogo==='BedWars'?'bw-partidas':'fn-partidas').value) || 0;
-    const kills = parseInt(document.getElementById(jogo==='BedWars'?'bw-kills':'fn-kills').value) || 0;
-    const vitorias = jogo==='BedWars'?parseInt(document.getElementById('bw-vitorias').value)||0:0;
-    const videoURL = document.getElementById(jogo==='BedWars'?'bw-video':'fn-video').value.trim();
-
-    // Adicionar envio para validação
-    if (!usuarioLogado.envios) usuarioLogado.envios = [];
-    usuarioLogado.envios.push({ jogo, partidas, kills, vitorias, video: videoURL, validado: false });
-
-    await set(ref(db, `usuarios/${usuarioLogado.nome}`), usuarioLogado);
-
-    alert("Stats enviados para validação!");
-    document.getElementById(jogo==='BedWars'?'bw-video':'fn-video').value = "";
-    renderRanking();
-    atualizarVideos();
-    mostrarValidacao();
-}
-
-// ----------------- VALIDAÇÃO -----------------
-async function mostrarValidacao() {
-    if (usuarioLogado.nome!=="DARK" && usuarioLogado.nome!=="ARTHUR") return;
-
-    document.getElementById("validacao-container").style.display="block";
-    const div = document.getElementById("validacao-list");
-    div.innerHTML="";
-
-    const snapshot = await get(ref(db, "usuarios"));
-    const data = snapshot.val();
-
-    for(let u in data){
-        if(data[u].envios){
-            data[u].envios.forEach((env, i)=>{
-                if(!env.validado){
-                    const p = document.createElement("p");
-                    p.innerHTML = `${u} - ${env.jogo}: ${env.kills} kills, ${env.partidas} partidas, ${env.vitorias||'-'} vitórias 
-                                   <button onclick="validar('${u}',${i})">Validar</button>`;
-                    div.appendChild(p);
-                }
-            });
-        }
-    }
-}
-
-async function validar(usuarioNome, envIdx){
-    const snapshot = await get(ref(db, `usuarios/${usuarioNome}`));
-    const usuario = snapshot.val();
-    usuario.envios[envIdx].validado=true;
-
-    const env = usuario.envios[envIdx];
-    if(env.jogo==="BedWars"){
-        usuario.BedWars = { kills: env.kills, partidas: env.partidas, vitorias: env.vitorias, videos: usuario.BedWars?.videos||[] };
-    } else {
-        usuario.Fortnite = { kills: env.kills, partidas: env.partidas, videos: usuario.Fortnite?.videos||[] };
-    }
-
-    await set(ref(db, `usuarios/${usuarioNome}`), usuario);
-    mostrarValidacao();
-    renderRanking();
-    atualizarVideos();
-}
-
-// ----------------- VÍDEOS -----------------
-async function atualizarVideos(){
-    if(usuarioLogado.nome!=="DARK" && usuarioLogado.nome!=="ARTHUR"){ 
-        document.getElementById("videos-container").style.display="none"; 
-        return; 
-    }
-    document.getElementById("videos-container").style.display="block";
-    const div = document.getElementById("videos-list");
-    div.innerHTML="";
-
-    const snapshot = await get(ref(db, "usuarios"));
-    const data = snapshot.val();
-
-    for(let u in data){
-        if(data[u].envios){
-            data[u].envios.forEach(env=>{
-                if(env.video){
-                    div.innerHTML+=`<p>${u} - ${env.jogo}: <a href="${env.video}" target="_blank">${env.video}</a></p>`;
-                }
-            });
-        }
-    }
-}
-
-// ----------------- RANKING -----------------
-function renderRanking(){
-    const bwDiv = document.getElementById("ranking-list-BW");
-    const fnDiv = document.getElementById("ranking-list-FN");
-
-    get(ref(db,"usuarios")).then(snapshot=>{
-        const data = snapshot.val();
-
-        if(bwDiv){
-            const sortedBW = Object.keys(data).map(u=>({nome:u,...data[u].BedWars})).sort((a,b)=>b.kills-a.kills).slice(0,100);
-            bwDiv.innerHTML="";
-            sortedBW.forEach((u,i)=>{
-                bwDiv.innerHTML+=`<p>Top ${i+1} - <span onclick="abrirChat('${u.nome}')">${u.nome}</span>: ${u.kills} kills, ${u.partidas} partidas, ${u.vitorias||'-'} vitórias</p>`;
-            });
-        }
-
-        if(fnDiv){
-            const sortedFN = Object.keys(data).map(u=>({nome:u,...data[u].Fortnite})).sort((a,b)=>b.kills-a.kills).slice(0,100);
-            fnDiv.innerHTML="";
-            sortedFN.forEach((u,i)=>{
-                fnDiv.innerHTML+=`<p>Top ${i+1} - <span onclick="abrirChat('${u.nome}')">${u.nome}</span>: ${u.kills} kills, ${u.partidas} partidas</p>`;
-            });
-        }
+if(!currentUserId){
+    window.location.href = "index.html";
+}else{
+    database.ref("users/" + currentUserId).once("value", snap=>{
+        const user = snap.val();
+        document.getElementById("welcome").innerText = `Bem-vindo, ${user.nick}`;
     });
 }
 
-// ----------------- CHAT -----------------
-async function abrirChat(nomeUsuario){
-    chatUsuarioAtual = nomeUsuario;
+// ----------------- Modo BedWars / Fortnite -----------------
+function showMode(mode){
+    currentMode = mode;
+    const container = document.getElementById("mode-container");
+    container.innerHTML = "";
+
+    const kills = document.createElement("input");
+    kills.placeholder = "Kills";
+    kills.id = "stat-kills";
+
+    const wins = document.createElement("input");
+    wins.placeholder = "Vitórias";
+    wins.id = "stat-wins";
+    if(mode==="fortnite") wins.style.display="none";
+
+    const partidas = document.createElement("input");
+    partidas.placeholder = "Partidas";
+    partidas.id = "stat-partidas";
+
+    let serverInput = null;
+    if(mode==="bedwars"){
+        serverInput = document.createElement("select");
+        serverInput.id="stat-server";
+        ["Hylex","Mush","Hypixel"].forEach(s=>{
+            const option = document.createElement("option");
+            option.value = s;
+            option.text = s;
+            serverInput.appendChild(option);
+        });
+    }
+
+    const video = document.createElement("input");
+    video.placeholder = "URL do vídeo";
+    video.id="stat-video";
+
+    const submitBtn = document.createElement("button");
+    submitBtn.innerText="Enviar";
+    submitBtn.onclick = ()=>submitStats();
+
+    container.appendChild(kills);
+    if(wins.style.display!=="none") container.appendChild(wins);
+    container.appendChild(partidas);
+    if(serverInput) container.appendChild(serverInput);
+    container.appendChild(video);
+    container.appendChild(submitBtn);
+}
+
+// ----------------- Enviar Stats -----------------
+function submitStats(){
+    const kills = document.getElementById("stat-kills").value || 0;
+    const wins = document.getElementById("stat-wins")? document.getElementById("stat-wins").value : 0;
+    const partidas = document.getElementById("stat-partidas").value || 0;
+    const server = document.getElementById("stat-server")? document.getElementById("stat-server").value : "";
+    const videoURL = document.getElementById("stat-video").value || "";
+
+    const userRef = database.ref("users/"+currentUserId+"/stats/"+currentMode);
+    userRef.once("value", snap=>{
+        const data = snap.val();
+        const updated = {
+            kills: Number(kills) || data.kills,
+            wins: Number(wins) || data.wins,
+            partidas: Number(partidas) || data.partidas,
+            server: server || data.server,
+            videos: videoURL ? [...(data.videos||[]), videoURL] : data.videos||[]
+        };
+        userRef.set(updated, ()=>{
+            alert("Stats enviados!");
+            updateRanking();
+        });
+    });
+}
+
+// ----------------- Ranking Top 100 -----------------
+function updateRanking(){
+    const rankingContainer = document.getElementById("ranking-container");
+    rankingContainer.innerHTML = `<h3>Ranking ${currentMode}</h3>`;
+
+    database.ref("users").once("value", snap=>{
+        const users = [];
+        snap.forEach(u=>{
+            const userData = u.val();
+            users.push({nick:userData.nick,id:u.key,stats:userData.stats[currentMode]});
+        });
+        users.sort((a,b)=>b.stats.kills - a.stats.kills);
+        users.slice(0,100).forEach((u,index)=>{
+            const div = document.createElement("div");
+            div.innerText = `#${index+1} ${u.nick} - Kills: ${u.stats.kills}, Partidas: ${u.stats.partidas}`;
+            div.onclick = ()=>openChat(u.id,u.nick);
+            rankingContainer.appendChild(div);
+        });
+    });
+}
+
+// ----------------- Chat -----------------
+function openChat(userId,nick){
+    chattingWith = userId;
+    document.getElementById("chat-with").innerText = nick;
     document.getElementById("chat-container").style.display="block";
-    document.getElementById("chat-titulo").innerText="Chat com "+nomeUsuario;
-    atualizarChat();
+    loadChat();
 }
 
-async function enviarMensagem(){
-    const input = document.getElementById("chat-input");
-    const msg = input.value.trim();
-    if(!msg||!chatUsuarioAtual) return;
-
-    // Salvar para usuário logado
-    if(!usuarioLogado.chats) usuarioLogado.chats={};
-    if(!usuarioLogado.chats[chatUsuarioAtual]) usuarioLogado.chats[chatUsuarioAtual]=[];
-    usuarioLogado.chats[chatUsuarioAtual].push({de:usuarioLogado.nome,msg});
-    await set(ref(db, `usuarios/${usuarioLogado.nome}/chats`), usuarioLogado.chats);
-
-    input.value="";
-    atualizarChat();
+function closeChat(){
+    chattingWith = null;
+    document.getElementById("chat-container").style.display="none";
 }
 
-async function atualizarChat(){
-    if(!chatUsuarioAtual) return;
-
-    const div = document.getElementById("chat-mensagens");
-    div.innerHTML="";
-
-    const snapshot = await get(ref(db,"usuarios"));
-    const data = snapshot.val();
-
-    // Mensagens deste usuário
-    const msgs1 = usuarioLogado.chats?.[chatUsuarioAtual] || [];
-    msgs1.forEach(m=>{ div.innerHTML+=`<p><strong>${m.de}:</strong> ${m.msg}</p>`; });
-
-    // Mensagens do outro usuário
-    const msgs2 = data[chatUsuarioAtual]?.chats?.[usuarioLogado.nome] || [];
-    msgs2.forEach(m=>{ div.innerHTML+=`<p><strong>${m.de}:</strong> ${m.msg}</p>`; });
-
-    div.scrollTop = div.scrollHeight;
+function sendMessage(){
+    const msgInput = document.getElementById("chat-input");
+    if(!chattingWith || msgInput.value==="") return;
+    const msg = {
+        from: currentUserId,
+        text: msgInput.value,
+        timestamp: Date.now()
+    };
+    database.ref("chats/"+currentUserId+"/"+chattingWith).push(msg);
+    database.ref("chats/"+chattingWith+"/"+currentUserId).push(msg);
+    msgInput.value="";
 }
 
-// ----------------- LOGOUT -----------------
-function logout(){ window.location.href="index.html"; }
+function loadChat(){
+    const messagesDiv = document.getElementById("chat-messages");
+    messagesDiv.innerHTML="";
+    if(!chattingWith) return;
 
+    database.ref("chats/"+currentUserId+"/"+chattingWith).on("value", snap=>{
+        messagesDiv.innerHTML="";
+        snap.forEach(s=>{
+            const m = s.val();
+            const div = document.createElement("div");
+            div.innerText = `${m.from===currentUserId?"Você":"Outro"}: ${m.text}`;
+            messagesDiv.appendChild(div);
+        });
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    });
+}
+
+// Atualiza ranking automaticamente
+updateRanking();
