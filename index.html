@@ -1,71 +1,24 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login Neon Game</title>
-<style>
-body {
-    background:#111;
-    color:#fff;
-    font-family: Arial, sans-serif;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-    margin:0;
-}
-.container {
-    background:#222;
-    border:2px solid #9b00ff;
-    border-radius:10px;
-    padding:30px;
-    width:300px;
-    text-align:center;
-}
-input {
-    width:90%;
-    padding:10px;
-    margin:10px 0;
-    border-radius:5px;
-    border:1px solid #9b00ff;
-    background:#111;
-    color:#fff;
-}
-button {
-    padding:10px 20px;
-    background:#9b00ff;
-    border:none;
-    color:#fff;
-    cursor:pointer;
-    border-radius:5px;
-}
-button:hover {
-    background:#bb00ff;
-}
-a {
-    color:#9b00ff;
-    text-decoration:none;
-}
-a:hover {
-    text-decoration:underline;
-}
-</style>
+    <meta charset="UTF-8">
+    <title>Dark Academy - Login</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="container-login">
+        <h1>Login</h1>
+        <input type="email" id="login-email" placeholder="Email">
+        <input type="password" id="login-password" placeholder="Senha">
+        <button onclick="login()">Login</button>
+        <p>Não tem conta? <a href="register.html">Cadastre-se</a></p>
+    </div>
 
-<div class="container">
-    <h2>Login</h2>
-    <input type="text" id="login-nome" placeholder="Nome">
-    <input type="password" id="login-senha" placeholder="Senha">
-    <button id="btn-login">Login</button>
-    <p>Não possui conta? <a href="register.html">Cadastre-se</a></p>
-</div>
+    <!-- Scripts Firebase Compat -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-<script src="script.js"></script>
-<script>
-document.getElementById("btn-login").addEventListener("click", login);
-</script>
-
+    <!-- Script principal -->
+    <script src="script.js"></script>
 </body>
 </html>
