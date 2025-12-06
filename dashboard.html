@@ -1,36 +1,45 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Dashboard - Dark Academy</title>
+<title>Dark Academy Dashboard</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Dashboard</h1>
-    <div id="welcome"></div>
-    
-    <div class="mode-buttons">
-        <button onclick="showMode('bedwars')">BedWars</button>
-        <button onclick="showMode('fortnite')">Fortnite</button>
-    </div>
+<div class="top-bar">
+    <h2 id="welcome">Bem-vindo</h2>
+    <img id="profile-pic" src="default-profile.png" alt="Perfil" class="profile-pic">
+    <a href="https://discord.com" target="_blank">
+        <img src="https://img.icons8.com/color/48/000000/discord-logo.png" class="discord-icon"/>
+    </a>
+</div>
 
-    <div id="mode-container"></div>
+<div class="mode-buttons">
+    <button onclick="showMode('bedwars')">BedWars</button>
+    <button onclick="showMode('fortnite')">Fortnite</button>
+    <button onclick="showMode('freefire')">Free Fire</button>
+    <button onclick="showMode('clashroyale')">Clash Royale</button>
+</div>
 
-    <h2>Ranking</h2>
-    <div id="ranking-container"></div>
+<div id="mode-container" class="mode-container"></div>
 
-    <div id="chat-container" style="display:none;">
-        <h3>Chat com <span id="chat-with"></span></h3>
-        <div id="chat-messages" style="height:200px; overflow:auto; border:1px solid #ccc;"></div>
-        <input type="text" id="chat-input" placeholder="Mensagem">
-        <button onclick="sendMessage()">Enviar</button>
-        <button onclick="closeChat()">Fechar Chat</button>
-    </div>
+<h2 id="ranking-title">Ranking</h2>
+<div id="ranking-container" class="ranking-container"></div>
 
-    <!-- Scripts Firebase Compat -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<div id="chat-container" class="chat-container" style="display:none;">
+    <h3>Chat com <span id="chat-with"></span></h3>
+    <div id="chat-messages" class="chat-messages"></div>
+    <input type="text" id="chat-input" placeholder="Digite sua mensagem">
+    <button onclick="sendMessage()">Enviar</button>
+    <button onclick="closeChat()">Fechar Chat</button>
+</div>
 
-    <script src="script.js"></script>
+<div id="validation-container"></div>
+
+<!-- Firebase compat -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script src="script.js"></script>
 </body>
 </html>
